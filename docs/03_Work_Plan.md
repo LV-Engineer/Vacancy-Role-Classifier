@@ -11,9 +11,9 @@ No deadline. Work in short stages of one to three evenings; each stage ends with
 
 ## Stage 2: data
 
-- [ ] 5. Collect or download the postings; label them (aim for a few hundred, balanced enough that every class has examples)
-- [ ] 6. Data checks and the split; fill log rows 2 and 3
-- [ ] 7. Version the dataset; commit the version file, not the raw data
+- [x] 5. Collect or download the postings; label them (aim for a few hundred, balanced enough that every class has examples)
+- [x] 6. Data checks and the split; fill log rows 2 and 3
+- [x] 7. Version the dataset; commit the version file, not the raw data
 
 ## Stage 3: experiments
 
