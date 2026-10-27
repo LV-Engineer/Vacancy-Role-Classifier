@@ -4,9 +4,9 @@ No deadline. Work in short stages of one to three evenings; each stage ends with
 
 ## Stage 1: setup and decisions
 
-- [ ] 1. Create the repo, the `docs/` folder and the five documents
-- [ ] 2. Write the class list and the labeling rules (one page); decide the data source and record it in log row 1
-- [ ] 3. Choose the data versioning approach, set it up on an empty dataset, record the choice in the log
+- [x] 1. Create the repo, the `docs/` folder and the five documents
+- [x] 2. Write the class list and the labeling rules (one page); decide the data source and record it in log row 1
+- [x] 3. Choose the data versioning approach, set it up on an empty dataset, record the choice in the log
 - [ ] 4. Start MLflow (docker compose) and log a test run to check the setup
 
 ## Stage 2: data
