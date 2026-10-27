@@ -15,7 +15,7 @@ Rules for any source:
 - Check the license and the site terms before using or storing postings. If scraping is not allowed, do not scrape; collect by hand or use a dataset that permits the use.
 - Store only the text and the labels, no personal data, no contact details, no company internals.
 - Credit the source in the README and do not redistribute the raw files.
-- The test set is labeled by hand and never used for tuning.
+- The test set is labeled from the duties (v0.1: by Claude, without a human review) and never used for tuning.
 
 ## Labeling rules (write the final version before labeling)
 
@@ -46,10 +46,12 @@ Every dataset change (new rows, relabeling, a new split) creates a new data vers
 
 ## Facts about the data
 
-To fill after checking (write real numbers only):
+Real numbers for v0.1 (details and sources in `02_Experiment_Log.md`, rows 2 and 3):
 
-- Number of postings, per class and per language
-- Duplicate share before and after cleaning
-- Description length (median and extremes)
-- Share of postings where the title alone gives the label
-- Agreement on a re-labeled sample (label noise estimate)
+- Number of postings: LinkedIn 123,220 usable, 2,850 after cleaning and downsampling "Other" (Other 1200, Data Analyst 913, Python Backend 286, ML / AI 235, Data Scientist 216). Djinni 1,497 collected, 397 labeled (Other 215, ML / AI 73, Data Analyst 45, Python Backend 42, Data Scientist 22). Languages: LinkedIn all English; Djinni uk 762, en 735 (of the 1,497).
+- Duplicate share removed: LinkedIn target classes 1,810 to 1,650 (8.8%); Djinni non-Other 253 to 247 (2.4%).
+- Description length (median and extremes): not measured yet.
+- Share of postings where the title alone gives the label: the title keyword rule agrees with the duty-based label in about 79% of the 397 labeled Djinni postings (not representative: all non-Other plus 150 Other).
+- Agreement on a re-labeled sample (label noise estimate): not measured; the labels have one annotator (Claude) and no human review.
+
+Files of version v0.1 (not committed, tracked by DVC): `data/raw` (scraped and downloaded sources), `data/processed` (`linkedin.csv`, `djinni.csv` with the labels), `data/splits` (`train.csv`, `djinni_dev.csv`, `djinni_test.csv`).

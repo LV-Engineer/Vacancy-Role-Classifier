@@ -29,12 +29,20 @@ Draft v1. Change a rule only together with a note in `02_Experiment_Log.md`, bec
 
 Add each unclear posting here with the label chosen and the reason. This list explains the label noise in the README.
 
-| id | Why it was hard | Label chosen | Reason |
-| --- | --- | --- | --- |
-| | | | |
+The postings are stored with their reasons in the `note` column of `data/processed/djinni.csv` (55 postings). Recurring patterns:
+
+| Pattern | Label chosen | Reason |
+| --- | --- | --- |
+| Title says one role, duties say another (a "Senior Python Backend Engineer" doing analytics, a "Senior Data Scientist" doing data engineering, a "Data Analyst" who is a sports trader) | by the duties | general rule 1 |
+| Business Analyst (requirements, workshops, 1C, Odoo, BAS) | Other | no dashboards, SQL or metrics work |
+| Backend in Java, Node.js, Go, PHP or C#; QA automation in Python | Other | Python Backend means services built in Python |
+| Full-stack Python with LLM features | Python Backend when the requirements are FastAPI, REST, React; ML / AI Engineer when the duties are prompts, agents, evals | main duty |
+| Forward-deployed AI engineer (client-facing, builds AI solutions) | ML / AI Engineer | AI and LLM systems are the main deliverable |
+| Pure data engineering (ETL, pipelines, data lake) | Other | pure data engineering is Other in the class table |
+| Level: the title and the years field disagree | trust the requirements | level rule above; 5 postings changed |
 
 ## Label noise check
 
-- After labeling, re-label a random sample of about 30 postings a few days later without looking at the first labels.
-- Record the agreement (share of equal labels) in `05_Data.md`, section "Facts about the data".
-- For the public dataset, labels derived from titles are treated as weak labels; only the own hand-labeled set is used for validation and test.
+- The v0.1 Djinni labels were set by Claude in one pass from the duties, without a human review and without a re-label check. The label noise is therefore unknown; metrics on the test set measure agreement with one annotator.
+- If time allows later: re-label a random sample of about 30 postings a few days apart without looking at the first labels and record the agreement in `05_Data.md`. Any label change creates a new data version.
+- For the public dataset, labels derived from titles are treated as weak labels; only the labeled Djinni set is used for the test set (its dev part also goes into training, see log row 3).
