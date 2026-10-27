@@ -18,6 +18,7 @@ data/*
 # MLflow and model artifacts
 mlruns/
 mlartifacts/
+mlflow-data/
 *.pkl
 *.joblib
 
