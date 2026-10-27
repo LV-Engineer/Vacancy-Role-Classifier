@@ -4,7 +4,7 @@ Log each experiment, check and decision. Add a row after each run and commit the
 
 | # | Experiment or check | Setup | Result (MLflow run id) | Notes |
 | --- | --- | --- | --- | --- |
-| 1 | Data source and labeling decision | own labels, public dataset or both; class list | | decision and reason |
+| 1 | Data source and labeling decision | Option C (both). Public: LinkedIn Job Postings 2023-2024 (Kaggle, arshkon, CC BY-SA 4.0, 123,849 rows, columns `title` and `description` present). Own: Djinni vacancies, public pages only, `/jobs/` allowed by robots.txt, polite sequential collection. Classes and labeling rules: `docs/06_Labeling_Rules.md`. Data versioning: DVC with an S3 remote (gz-compressed raw data) | n/a (decision) | Public data gives volume for train, but its role labels come from title keywords (weak labels); the hand-labeled Djinni set is used for validation and test only. DOU was dropped: its terms (clause 2.5) forbid automated collection without the administration's consent. LinkedIn data is scraped from the site, so its terms may apply; used for a private learning project, raw files not redistributed, source credited in the README. Experience level: derived from `formatted_experience_level` (public) and the "years of experience" field (Djinni). S3 chosen for DVC although paid (about $0.01 per month for this size); to be closed at the end of the project |
 | 2 | Data checks | row counts, duplicates, empty texts, class balance, languages | | |
 | 3 | Split | stratified train, validation, test; seed; duplicates removed first | | |
 | 4 | Baseline: title only | TF-IDF + Logistic Regression on the title | | |
