@@ -3351,6 +3351,7 @@ dependencies = [
     { name = "dvc", extra = ["s3"] },
     { name = "httpx" },
     { name = "mlflow" },
+    { name = "scikit-learn" },
     { name = "selectolax" },
 ]
 
@@ -3359,6 +3360,7 @@ requires-dist = [
     { name = "dvc", extras = ["s3"], specifier = ">=3.67.1" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "mlflow", specifier = "==3.17.2" },
+    { name = "scikit-learn", specifier = ">=1.9.1" },
     { name = "selectolax", specifier = ">=1.0.2" },
 ]
 
