@@ -8,15 +8,14 @@ from sklearn.metrics import classification_report
 from data.constants import ROLES, SEED
 from data.schema import weak_role
 from models import embeddings, tf_idf
-from models.constants import FIELDS, N_SHOWN, TRAIN
+from models.constants import TFIDF_FIELDS, N_SHOWN, TRAIN
 from models.cross_validation import cross_validate
 from models.tracking import setup_mlflow
 
 MODELS = {
-    "tfidf": lambda train, field: (train[field].fillna(""), tf_idf.build_model),
+    "tfidf": lambda train, field: (tf_idf.inputs(train, field), lambda: tf_idf.build_model(field)),
     "embeddings": lambda train, field: (embeddings.embed(train[field]), embeddings.build_model),
 }
-
 
 def main(model: str, field: str, djinni_weight: float) -> None:
     train = pd.read_csv(TRAIN)
@@ -47,7 +46,9 @@ def main(model: str, field: str, djinni_weight: float) -> None:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("model", choices=MODELS)
-    parser.add_argument("field", choices=FIELDS)
+    parser.add_argument("field", choices=TFIDF_FIELDS)
     parser.add_argument("--djinni-weight", type=float, default=1.0)
     args = parser.parse_args()
+    if args.model == "embeddings" and args.field == "both":
+        parser.error("embeddings support only title or description")
     main(args.model, args.field, args.djinni_weight)
