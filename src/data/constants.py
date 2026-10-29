@@ -8,10 +8,11 @@ COLUMNS = ["id", "title", "description", "language", "role", "level", "source"]
 MIN_DESCRIPTION_CHARS = 200
 
 ROLE_PATTERNS = [
+    ("Other", r"business analyst|\bqa\b|test automation|automation|quality assurance"),
     ("ML / AI Engineer", r"machine learning|\bml\b|ai engineer|mlops|deep learning|\bllm\b"),
     ("Data Scientist", r"data scientist"),
-    ("Data Analyst", r"data analyst|business analyst|bi analyst|bi developer"),
-    ("Python Backend", r"python|backend|back-end|django|fastapi|flask"),
+    ("Data Analyst", r"data analyst|bi analyst|bi developer"),
+    ("Python Backend", r"python|django|fastapi|flask"),
 ]
 CYRILLIC = re.compile(r"[а-яіїєґ]", re.IGNORECASE)
 JUNIOR_LEVELS = {"Entry level", "Internship"}

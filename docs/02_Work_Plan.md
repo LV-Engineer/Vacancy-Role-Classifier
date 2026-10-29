@@ -19,8 +19,7 @@ No deadline. Work in short stages of one to three evenings; each stage ends with
 
 - [x] 8. Baselines: TF-IDF + Logistic Regression on the title only and on the description; compare macro-F1
 - [x] 9. Embeddings + classifier; test Ukrainian and English
-- [ ] 10. Error analysis (confusion matrix, read 30 wrong predictions) and level prediction (separate classifier or a second head)
-- [ ] 11. Optional: fine-tune a small transformer; skip if the gain is small
+- [x] 10. Error analysis (confusion matrix, read 30 wrong predictions) and level prediction (separate classifier or a second head)
 
 ## Stage 4: registry and service
 

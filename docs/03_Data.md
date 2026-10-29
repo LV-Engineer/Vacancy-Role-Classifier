@@ -62,15 +62,23 @@ Every dataset change (new rows, relabeling, a new split) creates a new data vers
 
 ## Facts about the data
 
-Real numbers for v0.1:
+Real numbers for v0.2 (v0.1 differs only in the LinkedIn weak labels, see Decisions):
 
-- Number of postings: LinkedIn 123,220 usable, 2,850 after cleaning and downsampling "Other" (Other 1200, Data Analyst 913, Python Backend 286, ML / AI 235, Data Scientist 216). Djinni 1,497 collected, 397 labeled (Other 215, ML / AI 73, Data Analyst 45, Python Backend 42, Data Scientist 22). Languages: LinkedIn all English; Djinni uk 762, en 735 (of the 1,497).
-- Duplicate share removed: LinkedIn target classes 1,810 to 1,650 (8.8%); Djinni non-Other 253 to 247 (2.4%).
+- LinkedIn: 123,220 usable postings, all English; the weak role is `Other` for 99.1%. After exact dedupe the target classes shrink from 1,118 to 991. After cleaning and downsampling "Other": 2,191 postings (Other 1,200, Data Analyst 377, ML / AI 234, Data Scientist 216, Python Backend 164). Level is unknown for 23.7% (623 of the 2,191).
+- Djinni: 1,497 collected (uk 762, en 735; junior 351 by the years field), 397 labeled (Other 215, ML / AI 73, Data Analyst 45, Python Backend 42, Data Scientist 22). Non-Other duplicates 253 to 247 (2.4%). 5 levels were overridden because the years contradicted the title; the 55 hard cases are in the `note` column.
+- Splits: `train` 2,488 (Other 1,361, Data Analyst 411, ML / AI 289, Data Scientist 232, Python Backend 195; level not_junior 1,291, junior 574, unknown 623); `djinni_dev` 297 (not_junior 257, junior 40); `djinni_test` 100 (Other 54, ML / AI 18, Python Backend 11, Data Analyst 11, Data Scientist 6; not_junior 88, junior 12).
 - Description length (median and extremes): not measured yet.
-- Share of postings where the title alone gives the label: the title keyword rule agrees with the duty-based label in about 79% of the 397 labeled Djinni postings (not representative: all non-Other plus 150 Other).
+- Share of postings where the title alone gives the label: the v0.1 title keyword rule agreed with the duty-based label in about 79% of the 397 labeled Djinni postings (not representative: all non-Other plus 150 Other).
 - Agreement on a re-labeled sample (label noise estimate): not measured; the labels have one annotator (Claude) and no human review.
 
-Files of version v0.1 (not committed, tracked by DVC): `data/raw` (scraped and downloaded sources), `data/processed` (`linkedin.csv`, `djinni.csv` with the labels), `data/splits` (`train.csv`, `djinni_dev.csv`, `djinni_test.csv`).
+Files (not committed, tracked by DVC): `data/raw` (scraped and downloaded sources), `data/processed` (`linkedin.csv`, `djinni.csv` with the labels), `data/splits` (`train.csv`, `djinni_dev.csv`, `djinni_test.csv`). Versions: v0.1 (weak labels from title keywords, tag `v0.1-data`) and v0.2 (weak labels follow the labeling rules).
+
+## Split and evaluation
+
+- Split (`src/data/split.py`): `StratifiedGroupKFold`, 4 folds, one fold is the test set (25%), seed 42, stratified by role. The group is the first 80 characters of the description (a rough proxy for one company), so such postings never land on both sides. Duplicates are removed first and no test description appears in the LinkedIn set. Level is not stratified.
+- `train` = LinkedIn (weak labels) plus `djinni_dev`; `djinni_test` is not touched until the end.
+- Models are compared by cross-validation on the 297 Djinni dev rows: 5 folds with the same group key, LinkedIn always in training, every fold validated only on Djinni rows it has not seen. In training a Djinni row weighs more than a LinkedIn row (weight 12-25).
+- Limits: the test set is small (6 Data Scientist and 12 junior postings), so per-class metrics are noisy. The Djinni weight and the v0.2 label rules were chosen after looking at dev errors, so dev scores are optimistic; only `djinni_test` is an honest estimate.
 
 ## Decisions
 
@@ -78,3 +86,5 @@ Files of version v0.1 (not committed, tracked by DVC): `data/raw` (scraped and d
 - DOU is dropped: its terms (clause 2.5) forbid automated collection without the administration's consent. LinkedIn data is scraped from the site, so its terms may apply: private learning project, raw files not redistributed, source credited in the README.
 - `djinni_dev` (297 rows, 9% of train) goes into training so the model sees Ukrainian text; only `djinni_test` stays out. Parameters are chosen by cross-validation on dev.
 - The DVC remote is S3: paid, about $0.01 per month for this size; close it at the end of the project.
+- v0.2: after the error analysis the weak LinkedIn labels follow the labeling rules (`business analyst`, QA and automation titles are `Other`; Python Backend needs python, django, fastapi or flask, a plain "backend" is `Other`). With the v0.1 labels the models had learned that every business analyst is a Data Analyst and every backend is a Python Backend, which the duty-based labels contradict.
+- Fine-tuning is skipped: the errors come from weak labels, not from model capacity.
