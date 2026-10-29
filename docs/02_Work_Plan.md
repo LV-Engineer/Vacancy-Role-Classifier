@@ -17,15 +17,15 @@ No deadline. Work in short stages of one to three evenings; each stage ends with
 
 ## Stage 3: experiments
 
-- [ ] 8. Baselines: title only and description
-- [ ] 9. Embeddings + classifier
-- [ ] 10. Error analysis, level prediction
-- [ ] 11. Optional: fine-tuning
+- [x] 8. Baselines: TF-IDF + Logistic Regression on the title only and on the description; compare macro-F1
+- [ ] 9. Embeddings + classifier; test Ukrainian and English
+- [ ] 10. Error analysis (confusion matrix, read 30 wrong predictions) and level prediction (separate classifier or a second head)
+- [ ] 11. Optional: fine-tune a small transformer; skip if the gain is small
 
 ## Stage 4: registry and service
 
 - [ ] 12. Register the best model, write and apply the promotion rule
-- [ ] 13. Reproducibility check
+- [ ] 13. Reproducibility check: re-run from the data version and commit, the metrics must match
 - [ ] 14. FastAPI endpoint, Pydantic schemas, Dockerfile, docker compose with MLflow
 - [ ] 15. Tests and CI
 

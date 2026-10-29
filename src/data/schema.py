@@ -3,20 +3,7 @@ import re
 
 import pandas as pd
 
-ROLES = ["Data Analyst", "Data Scientist", "ML / AI Engineer", "Python Backend", "Other"]
-LEVELS = ["junior", "not_junior"]
-COLUMNS = ["id", "title", "description", "language", "role", "level", "source"]
-MIN_DESCRIPTION_CHARS = 200
-
-ROLE_PATTERNS = [
-    ("ML / AI Engineer", r"machine learning|\bml\b|ai engineer|mlops|deep learning|\bllm\b"),
-    ("Data Scientist", r"data scientist"),
-    ("Data Analyst", r"data analyst|business analyst|bi analyst|bi developer"),
-    ("Python Backend", r"python|backend|back-end|django|fastapi|flask"),
-]
-CYRILLIC = re.compile(r"[а-яіїєґ]", re.IGNORECASE)
-
-SEED = 42
+from data.constants import CYRILLIC, ROLE_PATTERNS
 
 def weak_role(title: str) -> str:
     """Weak label from title keywords. Used for train and as a pre-label for manual work."""

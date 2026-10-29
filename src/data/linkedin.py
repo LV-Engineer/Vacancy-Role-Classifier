@@ -4,9 +4,8 @@ from pathlib import Path
 import pandas as pd
 
 from data.base import DataSource
-from data.schema import MIN_DESCRIPTION_CHARS, detect_language, weak_role
-
-JUNIOR_LEVELS = {"Entry level", "Internship"}
+from data.constants import JUNIOR_LEVELS, MIN_DESCRIPTION_CHARS
+from data.schema import detect_language, weak_role
 
 class LinkedInSource(DataSource):
     name = "linkedin"
