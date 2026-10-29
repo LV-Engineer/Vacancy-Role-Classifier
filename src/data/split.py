@@ -1,18 +1,12 @@
 """Split labeled Djinni into dev and a held-out test, then build the train set."""
-from pathlib import Path
-
 import pandas as pd
 from sklearn.model_selection import StratifiedGroupKFold
 
-from data.schema import COLUMNS, LEVELS, ROLES, detect_language, SEED
-
-LABELED = Path("data/processed/djinni.csv")
-LINKEDIN = Path("data/processed/linkedin.csv")
-OUT_DIR = Path("data/splits")
-TEST_FOLDS = 4
+from data.constants import COLUMNS, DJINNI_LABELED, LEVELS, LINKEDIN_PROCESSED, ROLES, SEED, SPLITS_DIR, TEST_FOLDS
+from data.schema import detect_language
 
 def load_labeled() -> pd.DataFrame:
-    df = pd.read_csv(LABELED)
+    df = pd.read_csv(DJINNI_LABELED)
     problems = []
     if not df["role"].isin(ROLES).all():
         problems.append("empty or unknown role")
@@ -21,7 +15,7 @@ def load_labeled() -> pd.DataFrame:
     if df["id"].duplicated().any():
         problems.append("duplicate ids")
     if problems:
-        raise ValueError(f"{LABELED}: {', '.join(problems)}")
+        raise ValueError(f"{DJINNI_LABELED}: {', '.join(problems)}")
     return df
 
 def company_key(description: str) -> str:
@@ -30,7 +24,7 @@ def company_key(description: str) -> str:
 
 def main() -> None:
     djinni = load_labeled()
-    linkedin = pd.read_csv(LINKEDIN)
+    linkedin = pd.read_csv(LINKEDIN_PROCESSED)
 
     splitter = StratifiedGroupKFold(n_splits=TEST_FOLDS, shuffle=True, random_state=SEED)
     groups = djinni["description"].map(company_key)
@@ -38,17 +32,17 @@ def main() -> None:
     dev, test = djinni.iloc[dev_idx], djinni.iloc[test_idx]
 
     leaked = test["description"].isin(linkedin["description"]).sum()
-    assert leaked == 0, f"{leaked} test descriptions are also in {LINKEDIN}"
+    assert leaked == 0, f"{leaked} test descriptions are also in {LINKEDIN_PROCESSED}"
 
     dev_train = dev.assign(language=dev["description"].map(detect_language), source="djinni")
     train = pd.concat([linkedin[COLUMNS], dev_train[COLUMNS]], ignore_index=True)
 
     assert list(train.columns) == COLUMNS
 
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    train.to_csv(OUT_DIR / "train.csv", index=False, encoding="utf-8-sig")
-    dev.to_csv(OUT_DIR / "djinni_dev.csv", index=False, encoding="utf-8-sig")
-    test.to_csv(OUT_DIR / "djinni_test.csv", index=False, encoding="utf-8-sig")
+    SPLITS_DIR.mkdir(parents=True, exist_ok=True)
+    train.to_csv(SPLITS_DIR / "train.csv", index=False, encoding="utf-8-sig")
+    dev.to_csv(SPLITS_DIR / "djinni_dev.csv", index=False, encoding="utf-8-sig")
+    test.to_csv(SPLITS_DIR / "djinni_test.csv", index=False, encoding="utf-8-sig")
 
     for name, part in (("train", train), ("djinni_dev", dev), ("djinni_test", test)):
         print(f"--- {name}: {len(part)} rows")

@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from data.schema import COLUMNS, LEVELS, MIN_DESCRIPTION_CHARS, ROLES, SEED
+from data.constants import COLUMNS, LEVELS, MIN_DESCRIPTION_CHARS, ROLES, SEED
 
 
 class DataSource(ABC):
