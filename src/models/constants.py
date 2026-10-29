@@ -6,3 +6,6 @@ TFIDF_PARAMS = {"ngram_range": (1, 2), "min_df": 2, "sublinear_tf": True}
 LOGREG_PARAMS = {"max_iter": 1000, "class_weight": "balanced"}
 N_FOLDS = 5
 TRAIN = Path("data/splits/train.csv")
+
+EMBEDDING_MODEL = "intfloat/multilingual-e5-small"
+EMBEDDING_MAX_TOKENS = 256
