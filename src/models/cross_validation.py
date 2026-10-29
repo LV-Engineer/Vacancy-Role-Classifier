@@ -9,10 +9,10 @@ from data.constants import SEED
 from data.split import company_key
 from models.constants import N_FOLDS, WEIGHT_PARAM
 
-def rows(X: pd.Series | np.ndarray, pos: np.ndarray):
-    return X.iloc[pos] if isinstance(X, pd.Series) else X[pos]
+def rows(X: pd.Series | pd.DataFrame | np.ndarray, pos: np.ndarray):
+    return X.iloc[pos] if isinstance(X, (pd.Series, pd.DataFrame)) else X[pos]
 
-def cross_validate(train: pd.DataFrame, X: pd.Series | np.ndarray, build_model: Callable, djinni_weight: float = 1.0) -> tuple[pd.DataFrame, np.ndarray]:
+def cross_validate(train: pd.DataFrame, X: pd.Series | pd.DataFrame | np.ndarray, build_model: Callable, djinni_weight: float = 1.0) -> tuple[pd.DataFrame, np.ndarray]:
     """Predict the Djinni rows fold by fold: each fold is predicted by a model trained without it."""
     is_djinni = train["source"].eq("djinni").to_numpy()
     linkedin_pos = np.flatnonzero(~is_djinni)
