@@ -18,7 +18,7 @@ Questions the project must answer (each one must end with a number and a short c
 
 # Data
 
-* Source and labels: an open decision, see `docs/05_Data.md` (own labeling of postings, a public dataset, or both); write the decision and the reason in the experiment log
+* Source and labels: decided: both (a public LinkedIn dataset for training, own labeled Djinni postings for evaluation); see `docs/03_Data.md`
 * Classes (draft, change after looking at the data): Data Analyst, Data Scientist, ML / AI Engineer, Python Backend, Other
 * Language: postings may be Ukrainian or English; the choice of the embedding model must be tested on both
 * The raw files are not committed; versions of the dataset are tracked by the data versioning approach chosen in the work plan (record the choice in the log)
@@ -34,7 +34,7 @@ Questions the project must answer (each one must end with a number and a short c
 | Data versioning | one data versioning approach, chosen in step 2 of the work plan, so that a model can be tied to the exact data it was trained on |
 | Serving | FastAPI, Pydantic validation, one prediction endpoint (role, level, probabilities) and a health endpoint |
 | Packaging and quality | Docker and docker compose, pytest, CI on GitHub Actions, type checks |
-| Version control | Git, GitHub (workflow in `docs/04_Git_Workflow.md`) |
+| Version control | Git, GitHub |
 
 # Approach
 

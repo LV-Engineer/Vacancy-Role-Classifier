@@ -10,10 +10,11 @@ __pycache__/
 .env
 
 # Data: raw files are not committed, only DVC pointers
-data/*
-!data/*.dvc
+data/**
+!data/**/
+!data/**/*.dvc
 !data/.gitignore
-!data/samples/
+!data/samples/**
 
 # MLflow and model artifacts
 mlruns/

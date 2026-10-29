@@ -2,7 +2,7 @@
 
 The raw data files are **not committed**. Only the small data version file (the pointer to the data) and small samples for tests may be committed.
 
-## Source (open decision, record the choice in log row 1)
+## Source (decided: option C, both)
 
 | Option | What it is | Pros | Cons |
 | --- | --- | --- | --- |
@@ -17,14 +17,30 @@ Rules for any source:
 - Credit the source in the README and do not redistribute the raw files.
 - The test set is labeled from the duties (v0.1: by Claude, without a human review) and never used for tuning.
 
-## Labeling rules (write the final version before labeling)
+## Labeling rules
 
-Draft classes: Data Analyst, Data Scientist, ML / AI Engineer, Python Backend, Other.
+Change a rule only together with a note here: every change can shift the labels and needs a new data version.
 
-- Label by the **duties and requirements**, not by the title alone (this is the point of the project).
-- If a posting mixes two roles, label by the main duty; if unclear, label Other and note it.
-- Level: `junior` if the posting asks for up to about one year or says junior, trainee or intern; otherwise `not_junior`.
-- Keep a short list of hard examples and how they were labeled (it helps to explain label noise in the README).
+- Label by the **duties and requirements**, not by the title. If a posting mixes two roles, label by the main duty; if still unclear, label `Other` and note it. One label per posting; ignore company name, perks and salary; do not edit the text.
+
+| Role | Label it when the main duties are |
+| --- | --- |
+| Data Analyst | dashboards, reports, ad-hoc analysis, SQL, business metrics |
+| Data Scientist | statistical and ML models for a business question, experiments |
+| ML / AI Engineer | models in production, training pipelines, MLOps, LLM and deep learning systems |
+| Python Backend | services and APIs in Python; data and ML only as a side topic |
+| Other | anything else: sales, QA, frontend, pure data engineering, management, unclear postings |
+
+- Level: `junior` if the posting asks for up to about one year or says junior, trainee, intern or "no experience required"; otherwise `not_junior`. If the title says junior but the requirements ask for 3 or more years, trust the requirements.
+
+Hard cases (the 55 postings with reasons are in the `note` column of `data/processed/djinni.csv`):
+
+- Title says one role, duties another: label by the duties.
+- Business Analyst (requirements, workshops, 1C, Odoo): `Other`, no dashboards, SQL or metrics.
+- Backend in Java, Node.js, Go, PHP or C#, QA automation in Python: `Other`; Python Backend means services built in Python.
+- Full-stack Python with LLM features: Python Backend when the requirements are FastAPI, REST, React; ML / AI Engineer when the duties are prompts, agents, evals.
+- Forward-deployed AI engineer: ML / AI Engineer, AI and LLM systems are the deliverable.
+- Pure data engineering (ETL, pipelines, data lake): `Other`.
 
 ## Schema of the own dataset
 
@@ -42,11 +58,11 @@ Verify the real columns after loading if a public dataset is used.
 
 ## Data versioning
 
-Every dataset change (new rows, relabeling, a new split) creates a new data version. A trained model in MLflow must record the data version it used, so that the run can be reproduced. The approach is chosen in step 3 of the work plan and recorded in the log.
+Every dataset change (new rows, relabeling, a new split) creates a new data version. A trained model in MLflow must record the data version it used, so that the run can be reproduced. The approach is DVC with an S3 remote (see Decisions).
 
 ## Facts about the data
 
-Real numbers for v0.1 (details and sources in `02_Experiment_Log.md`, rows 2 and 3):
+Real numbers for v0.1:
 
 - Number of postings: LinkedIn 123,220 usable, 2,850 after cleaning and downsampling "Other" (Other 1200, Data Analyst 913, Python Backend 286, ML / AI 235, Data Scientist 216). Djinni 1,497 collected, 397 labeled (Other 215, ML / AI 73, Data Analyst 45, Python Backend 42, Data Scientist 22). Languages: LinkedIn all English; Djinni uk 762, en 735 (of the 1,497).
 - Duplicate share removed: LinkedIn target classes 1,810 to 1,650 (8.8%); Djinni non-Other 253 to 247 (2.4%).
@@ -55,3 +71,10 @@ Real numbers for v0.1 (details and sources in `02_Experiment_Log.md`, rows 2 and
 - Agreement on a re-labeled sample (label noise estimate): not measured; the labels have one annotator (Claude) and no human review.
 
 Files of version v0.1 (not committed, tracked by DVC): `data/raw` (scraped and downloaded sources), `data/processed` (`linkedin.csv`, `djinni.csv` with the labels), `data/splits` (`train.csv`, `djinni_dev.csv`, `djinni_test.csv`).
+
+## Decisions
+
+- Source: option C. LinkedIn Job Postings 2023-2024 (Kaggle, arshkon, CC BY-SA 4.0) gives volume but its role labels are weak (title keywords); own Djinni vacancies (public `/jobs/` pages) give the labeled evaluation set.
+- DOU is dropped: its terms (clause 2.5) forbid automated collection without the administration's consent. LinkedIn data is scraped from the site, so its terms may apply: private learning project, raw files not redistributed, source credited in the README.
+- `djinni_dev` (297 rows, 9% of train) goes into training so the model sees Ukrainian text; only `djinni_test` stays out. Parameters are chosen by cross-validation on dev.
+- The DVC remote is S3: paid, about $0.01 per month for this size; close it at the end of the project.
