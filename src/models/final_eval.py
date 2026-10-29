@@ -12,8 +12,8 @@ from models.metrics import evaluate
 from models.tf_idf import build_model, inputs
 from models.tracking import data_version, setup_mlflow
 
-
-def main(field: str, djinni_weight: float) -> None:
+def train_and_score(field: str, djinni_weight: float):
+    """Fit on the whole train set and score on djinni_test; logs the confusion matrices to the active run."""
     train = pd.read_csv(TRAIN)
     test = pd.read_csv(SPLITS / "djinni_test.csv")
 
@@ -21,18 +21,22 @@ def main(field: str, djinni_weight: float) -> None:
     model = build_model(field).fit(inputs(train, field), train["role"], **{WEIGHT_PARAM: weights})
     y_pred = model.predict(inputs(test, field))
 
+    metrics = evaluate(test["role"], y_pred, "test")
+    metrics |= evaluate(test["role"], test["title"].map(weak_role), "rule_test")
+    return model, metrics, len(train), len(test)
+
+def main(field: str, djinni_weight: float) -> None:
     setup_mlflow()
     with mlflow.start_run(run_name=f"final-tfidf-{field}-w{djinni_weight:g}"):
+        model, metrics, train_rows, test_rows = train_and_score(field, djinni_weight)
         mlflow.log_params({
             "model": "tfidf + logistic regression",
             "field": field,
             "djinni_weight": djinni_weight,
-            "train_rows": len(train),
-            "test_rows": len(test),
+            "train_rows": train_rows,
+            "test_rows": test_rows,
             "data_splits_md5": data_version(),
         })
-        metrics = evaluate(test["role"], y_pred, "test")
-        metrics |= evaluate(test["role"], test["title"].map(weak_role), "rule_test")
         mlflow.log_metrics(metrics)
         mlflow.sklearn.log_model(model, name="model")
         for prefix in ("test", "rule_test"):
