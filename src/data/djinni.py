@@ -3,7 +3,8 @@ from pathlib import Path
 import pandas as pd
 
 from data.base import DataSource
-from data.schema import level_from_years, weak_role
+from data.schema import level_from_years
+from rules.roles import weak_role
 
 class DjinniSource(DataSource):
     name = "djinni"

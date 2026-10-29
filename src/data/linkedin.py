@@ -5,7 +5,8 @@ import pandas as pd
 
 from data.base import DataSource
 from data.constants import JUNIOR_LEVELS, MIN_DESCRIPTION_CHARS
-from data.schema import detect_language, weak_role
+from data.schema import detect_language
+from rules.roles import weak_role
 
 class LinkedInSource(DataSource):
     name = "linkedin"

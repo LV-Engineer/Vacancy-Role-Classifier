@@ -20,7 +20,7 @@ def main(run_id: str) -> None:
         )
 
     with mlflow.start_run(run_name=f"reproduce-{run_id[:8]}"):
-        _, metrics, _, _ = train_and_score(params["field"], float(params["djinni_weight"]))
+        _, metrics, _, _ = train_and_score(params.get("target", "role"), params["field"], float(params["djinni_weight"]))
         mlflow.log_params({"reproduced_run": run_id, "data_splits_md5": data_version()})
         mlflow.log_metrics(metrics)
 

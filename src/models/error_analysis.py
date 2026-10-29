@@ -6,7 +6,7 @@ import pandas as pd
 from sklearn.metrics import classification_report
 
 from data.constants import ROLES, SEED
-from data.schema import weak_role
+from rules.roles import weak_role
 from models import embeddings, tf_idf
 from models.constants import TFIDF_FIELDS, N_SHOWN, TRAIN
 from models.cross_validation import cross_validate
