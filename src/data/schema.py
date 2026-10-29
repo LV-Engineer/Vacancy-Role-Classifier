@@ -1,17 +1,7 @@
 """Common schema and helpers shared by all data sources."""
-import re
-
 import pandas as pd
 
-from data.constants import CYRILLIC, ROLE_PATTERNS
-
-def weak_role(title: str) -> str:
-    """Weak label from title keywords. Used for train and as a pre-label for manual work."""
-    lowered = title.lower()
-    for role, pattern in ROLE_PATTERNS:
-        if re.search(pattern, lowered):
-            return role
-    return "Other"
+from data.constants import CYRILLIC
 
 def level_from_years(years: float | None) -> str | None:
     """junior = up to 1 year of required experience; unknown stays empty."""

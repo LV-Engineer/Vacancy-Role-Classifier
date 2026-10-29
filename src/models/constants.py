@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from data.constants import LEVELS, ROLES
+
 SPLITS = Path("data/splits")
 TRAIN = Path("data/splits/train.csv")
 
@@ -16,6 +18,8 @@ EMBEDDING_MAX_TOKENS = 256
 
 N_SHOWN = 30
 
-MODEL_NAME = "vacancy-role-classifier"
+TARGETS = ("role", "level")
+LABELS = {"role": ROLES, "level": LEVELS}
+MODEL_NAMES = {"role": "vacancy-role-classifier", "level": "vacancy-level-classifier"}
 PROMOTION_METRIC = "test_macro_f1"
-PROMOTION_THRESHOLD = 0.85
+PROMOTION_TOLERANCE = 0.04
