@@ -4,30 +4,30 @@ No deadline. Work in short stages of one to three evenings; each stage ends with
 
 ## Stage 1: setup and decisions
 
-- [x] 1. Create the repo, the `docs/` folder and the five documents
-- [x] 2. Write the class list and the labeling rules (one page); decide the data source and record it in log row 1
-- [x] 3. Choose the data versioning approach, set it up on an empty dataset, record the choice in the log
+- [x] 1. Create the repo, the `docs/` folder and the four documents
+- [x] 2. Write the class list and the labeling rules (one page); decide the data source and record it in `docs/03_Data.md`
+- [x] 3. Choose the data versioning approach, set it up on an empty dataset, record the choice in `docs/03_Data.md`
 - [x] 4. Start MLflow (docker compose) and log a test run to check the setup
 
 ## Stage 2: data
 
 - [x] 5. Collect or download the postings; label them (aim for a few hundred, balanced enough that every class has examples)
-- [x] 6. Data checks and the split; fill log rows 2 and 3
+- [x] 6. Data checks and the split; record the facts in `docs/03_Data.md`
 - [x] 7. Version the dataset; commit the version file, not the raw data
 
 ## Stage 3: experiments
 
-- [ ] 8. Baselines: title only and description (rows 4 and 5)
-- [ ] 9. Embeddings + classifier (row 6)
-- [ ] 10. Error analysis, level prediction (rows 8 and 9)
-- [ ] 11. Optional: fine-tuning (row 7); skip if time is short
+- [ ] 8. Baselines: title only and description
+- [ ] 9. Embeddings + classifier
+- [ ] 10. Error analysis, level prediction
+- [ ] 11. Optional: fine-tuning
 
 ## Stage 4: registry and service
 
-- [ ] 12. Register the best model, write and apply the promotion rule (row 10)
-- [ ] 13. Reproducibility check (row 11)
+- [ ] 12. Register the best model, write and apply the promotion rule
+- [ ] 13. Reproducibility check
 - [ ] 14. FastAPI endpoint, Pydantic schemas, Dockerfile, docker compose with MLflow
-- [ ] 15. Tests and CI (row 12)
+- [ ] 15. Tests and CI
 
 ## Stage 5: finish
 
