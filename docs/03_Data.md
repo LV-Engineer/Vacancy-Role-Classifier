@@ -80,6 +80,23 @@ Files (not committed, tracked by DVC): `data/raw` (scraped and downloaded source
 - Models are compared by cross-validation on the 297 Djinni dev rows: 5 folds with the same group key, LinkedIn always in training, every fold validated only on Djinni rows it has not seen. In training a Djinni row weighs more than a LinkedIn row (weight 12-25).
 - Limits: the test set is small (6 Data Scientist and 12 junior postings), so per-class metrics are noisy. The Djinni weight and the v0.2 label rules were chosen after looking at dev errors, so dev scores are optimistic; only `djinni_test` is an honest estimate.
 
+## Results and promotion (v0.2)
+
+Macro-F1: cross-validation on Djinni dev, and `djinni_test` (used once, for the final model).
+
+| Model | dev CV | test |
+| --- | --- | --- |
+| rule baseline (title keywords) | 0.934 | 0.890 |
+| TF-IDF, title (Djinni weight 1) | 0.913 | 0.882 |
+| TF-IDF, title + description (weight 1) | 0.920 | not run |
+| embeddings, title (weight 25) | 0.885 | not run |
+| TF-IDF, description (weight 25) | 0.776 | not run |
+
+- The description adds nothing over the title under these labels: 0.920 against 0.913 is within noise. Titles and the v0.2 weak labels come from the same rules, and the Djinni labels were set with the title keyword hint visible.
+- On the test set the model is on the level of the rule (0.882 against 0.890, with 100 postings the noise is about 0.05). The rule encodes the labeling rules the labels were made with, so it is not an independent reference.
+- Registered model: `vacancy-role-classifier` version 1 (TF-IDF on the title, weight 1, trained on the whole `train.csv`), alias `production`. The service loads `models:/vacancy-role-classifier@production`.
+- Promotion rule: a version gets the `production` alias when `test_macro_f1` is at least 0.85 (the rule baseline 0.890 minus about 0.04, the noise of a 100-posting test set); otherwise it stays `candidate`. The threshold was set after the first test result (0.882), so for version 1 it is not independent; for later models it works as a real gate.
+
 ## Decisions
 
 - Source: option C. LinkedIn Job Postings 2023-2024 (Kaggle, arshkon, CC BY-SA 4.0) gives volume but its role labels are weak (title keywords); own Djinni vacancies (public `/jobs/` pages) give the labeled evaluation set.
