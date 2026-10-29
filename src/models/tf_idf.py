@@ -1,5 +1,6 @@
 """TF-IDF + Logistic Regression baseline: role from the title or from the description."""
 import sys
+import argparse
 
 import mlflow
 import pandas as pd
@@ -15,18 +16,19 @@ from models.cross_validation import cross_validate
 def build_model() -> Pipeline:
     return make_pipeline(TfidfVectorizer(**TFIDF_PARAMS), LogisticRegression(**LOGREG_PARAMS))
 
-def main(field: str) -> None:
+def main(field: str, djinni_weight: float) -> None:
     train = pd.read_csv(TRAIN)
-    djinni, y_pred = cross_validate(train, train[field].fillna(""), build_model)
+    djinni, y_pred = cross_validate(train, train[field].fillna(""), build_model, djinni_weight)
 
     setup_mlflow()
-    with mlflow.start_run(run_name=f'tfidf-{field}'):
+    with mlflow.start_run(run_name=f"tfidf-{field}-w{djinni_weight:g}"):
         mlflow.log_params({
             "model": "tfidf + logistic regression",
             "field": field,
             "n_folds": N_FOLDS,
             "train_rows": len(train),
             "data_splits_md5": data_version(),
+            "djinni_weight": djinni_weight,
             **{f"tfidf_{k}": v for k, v in TFIDF_PARAMS.items()},
             **{f"logreg_{k}": v for k, v in LOGREG_PARAMS.items()},
         })
@@ -36,6 +38,8 @@ def main(field: str) -> None:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2 or sys.argv[1] not in FIELDS:
-        raise SystemExit(f"usage: tfidf.py {' | '.join(FIELDS)}")
-    main(sys.argv[1])
+    parser = argparse.ArgumentParser()
+    parser.add_argument("field", choices=FIELDS)
+    parser.add_argument("--djinni-weight", type=float, default=1.0)
+    args = parser.parse_args()
+    main(args.field, args.djinni_weight)

@@ -7,12 +7,12 @@ from sklearn.model_selection import StratifiedGroupKFold
 
 from data.constants import SEED
 from data.split import company_key
-from models.constants import N_FOLDS
+from models.constants import N_FOLDS, WEIGHT_PARAM
 
-def rows(X, pos: np.ndarray):
+def rows(X: pd.Series | np.ndarray, pos: np.ndarray):
     return X.iloc[pos] if isinstance(X, pd.Series) else X[pos]
 
-def cross_validate(train: pd.DataFrame, X, build_model: Callable) -> tuple[pd.DataFrame, np.ndarray]:
+def cross_validate(train: pd.DataFrame, X: pd.Series | np.ndarray, build_model: Callable, djinni_weight: float = 1.0) -> tuple[pd.DataFrame, np.ndarray]:
     """Predict the Djinni rows fold by fold: each fold is predicted by a model trained without it."""
     is_djinni = train["source"].eq("djinni").to_numpy()
     linkedin_pos = np.flatnonzero(~is_djinni)
@@ -24,6 +24,7 @@ def cross_validate(train: pd.DataFrame, X, build_model: Callable) -> tuple[pd.Da
     y_pred = np.empty(len(djinni), dtype=object)
     for fit_idx, val_idx in folds.split(djinni, djinni["role"], groups):
         fit_pos = np.concatenate([linkedin_pos, djinni_pos[fit_idx]])
-        model = build_model().fit(rows(X, fit_pos), train["role"].iloc[fit_pos])
+        weights = np.where(is_djinni[fit_pos], djinni_weight, 1.0)
+        model = build_model().fit(rows(X, fit_pos), train["role"].iloc[fit_pos], **{WEIGHT_PARAM: weights})
         y_pred[val_idx] = model.predict(rows(X, djinni_pos[val_idx]))
     return djinni, y_pred
