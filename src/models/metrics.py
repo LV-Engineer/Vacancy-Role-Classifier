@@ -6,7 +6,9 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import accuracy_score, f1_score
 
-def evaluate(y_true, y_pred, prefix: str, labels: list[str]) -> dict[str, float]:
+Predictions = pd.Series | np.ndarray | list[str]
+
+def evaluate(y_true: Predictions, y_pred: Predictions, prefix: str, labels: list[str]) -> dict[str, float]:
     metrics = {
         f"{prefix}_macro_f1": float(f1_score(y_true, y_pred, labels=labels, average="macro", zero_division=0)),
         f"{prefix}_accuracy": float(accuracy_score(y_true, y_pred)),

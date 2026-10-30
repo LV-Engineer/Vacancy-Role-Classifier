@@ -1,5 +1,7 @@
 """Error analysis: where a model is wrong on Djinni, compared with the title rule."""
 import argparse
+from collections.abc import Callable
+from typing import Any
 
 import mlflow
 import pandas as pd
@@ -12,7 +14,7 @@ from models.constants import TFIDF_FIELDS, N_SHOWN, TRAIN
 from models.cross_validation import cross_validate
 from models.tracking import setup_mlflow
 
-MODELS = {
+MODELS: dict[str, Callable[[pd.DataFrame, str], tuple[Any, Callable[[], Any]]]] = {
     "tfidf": lambda train, field: (tf_idf.inputs(train, field), lambda: tf_idf.build_model(field)),
     "embeddings": lambda train, field: (embeddings.embed(train[field]), embeddings.build_model),
 }

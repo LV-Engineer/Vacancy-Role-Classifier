@@ -31,3 +31,6 @@ mlflow-data/
 .vscode/
 .idea/
 .DS_Store
+
+# Tests
+.coverage_data/

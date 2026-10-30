@@ -10,6 +10,13 @@ dependencies = [
 ]
 
 [dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "mypy>=2.4.1",
+    "pandas-stubs>=3.1.0.261029",
+    "pytest>=8.0",
+    "pytest-cov>=7.1.0",
+]
 train = [
     "botocore[crt]>=1.43.117",
     "dvc[s3]>=3.67.1",
@@ -18,5 +25,42 @@ train = [
     "sentence-transformers>=6.2.0",
 ]
 
+[tool.coverage.run]
+data_file = ".coverage_data/.coverage"
+omit = [
+    "tests/*",
+    ".venv/*",
+    "src/scrape/*",
+    "src/models/embeddings.py",
+    "src/models/final_eval.py",
+    "src/models/register.py",
+    "src/models/reproduce.py",
+    "src/models/run_baseline.py",
+    "src/models/error_analysis.py",
+    "src/models/tracking.py",
+]
+source = ["api", "rules", "data", "models"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "if __name__ == .__main__.:",
+]
+
 [tool.uv]
-default-groups = ["train"]
+default-groups = ["train", "dev"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+plugins = ["pydantic.mypy"]
+files = ["src"]
+mypy_path = "src"
+explicit_package_bases = true
+
+[[tool.mypy.overrides]]
+module = ["sklearn.*", "mlflow.*", "sentence_transformers.*", "selectolax.*", "dvc.*"]
+ignore_missing_imports = true

@@ -11,11 +11,12 @@ import random
 import re
 import time
 from pathlib import Path
+from typing import Any
 
 import httpx
 from selectolax.lexbor import LexborHTMLParser
 
-from djinni_pages import DELAY, RETRIES, USER_AGENT, Blocked
+from scrape.djinni_pages import DELAY, RETRIES, USER_AGENT, Blocked
 
 TITLE_SELECTOR = "h1"
 DESCRIPTION_SELECTOR = "div.job-post__description"
@@ -61,7 +62,7 @@ def job_id_from_url(url: str) -> str:
         raise ValueError(f"not a vacancy url: {url}")
     return match.group(1)
 
-def parse_job(url: str, html: str) -> dict | None:
+def parse_job(url: str, html: str) -> dict[str, Any] | None:
     tree = LexborHTMLParser(html)
     title_node = tree.css_first(TITLE_SELECTOR)
     desc_node = tree.css_first(DESCRIPTION_SELECTOR)
@@ -104,7 +105,7 @@ def load_done_ids(path: Path) -> set[str]:
         return {json.loads(line)["id"] for line in f if line.strip()}
 
 
-def append_job(path: Path, job: dict) -> None:
+def append_job(path: Path, job: dict[str, Any]) -> None:
     with path.open("a", encoding="utf-8") as f:
         f.write(json.dumps(job, ensure_ascii=False) + "\n")
 

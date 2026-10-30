@@ -5,6 +5,7 @@ import mlflow
 import mlflow.sklearn
 import numpy as np
 import pandas as pd
+from sklearn.pipeline import Pipeline
 
 from models.constants import SPLITS, TFIDF_FIELDS, TRAIN, WEIGHT_PARAM, LABELS, TARGETS
 from rules.by_target import RULES
@@ -12,7 +13,7 @@ from models.metrics import evaluate
 from models.tf_idf import build_model, inputs
 from models.tracking import data_version, setup_mlflow
 
-def train_and_score(target: str, field: str, djinni_weight: float):
+def train_and_score(target: str, field: str, djinni_weight: float) -> tuple[Pipeline, dict[str, float], int, int]:
     """Fit on the whole train set and score on djinni_test; logs the confusion matrices to the active run."""
     train = pd.read_csv(TRAIN).dropna(subset=[target])
     test = pd.read_csv(SPLITS / "djinni_test.csv")
