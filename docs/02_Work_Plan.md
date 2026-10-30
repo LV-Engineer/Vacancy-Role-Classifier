@@ -30,5 +30,5 @@ No deadline. Work in short stages of one to three evenings; each stage ends with
 
 ## Stage 5: finish
 
-- [ ] 16. Insights for each of the five questions in the brief
-- [ ] 17. README: problem, how to reproduce, results table, limitations
+- [x] 16. Insights for each of the five questions in the brief
+- [x] 17. README: problem, how to reproduce, results table, limitations
