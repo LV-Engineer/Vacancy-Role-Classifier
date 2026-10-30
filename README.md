@@ -34,6 +34,12 @@ Prediction takes about 5 ms in the process and about 53 ms through the Docker se
 
 Details, the labeling rules, the split and the evaluation protocol are in [docs/03_Data.md](docs/03_Data.md).
 
+### Data flow
+
+![Data flow: from the original files to train, dev and test, with the step on every arrow](docs/images/data-map.png)
+
+Folders are the groups, cards are the files, and every arrow is a step (`gzip`, `prepare.py`, `labeling`, `split.py`, `merge`). The arrows leaving `splits` show where each set is used: `training` and `validation` (cross-validation on the Djinni rows) use `train`, `evaluation` uses `djinni_test`.
+
 ## Quickstart: the service
 
 Needs Docker. The service loads the `production` models from the MLflow registry.
