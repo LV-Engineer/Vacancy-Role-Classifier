@@ -1,0 +1,9 @@
+.git
+.venv
+.env
+.dvc
+data
+mlflow-data
+ml-tracking
+docs
+**/__pycache__

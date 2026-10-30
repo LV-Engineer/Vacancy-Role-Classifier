@@ -25,7 +25,7 @@ No deadline. Work in short stages of one to three evenings; each stage ends with
 
 - [x] 12. Register the best model, write and apply the promotion rule
 - [x] 13. Reproducibility check: re-run from the data version and commit, the metrics must match
-- [ ] 14. FastAPI endpoint, Pydantic schemas, Dockerfile, docker compose with MLflow
+- [x] 14. FastAPI endpoint, Pydantic schemas, Dockerfile, docker compose with MLflow
 - [ ] 15. Tests and CI
 
 ## Stage 5: finish

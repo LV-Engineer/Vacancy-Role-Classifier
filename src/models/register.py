@@ -19,6 +19,7 @@ def main(run_id: str) -> None:
     version = mlflow.register_model(f"runs:/{run_id}/model", name)
     client.set_registered_model_alias(name, "candidate", version.version)
     client.set_model_version_tag(name, version.version, PROMOTION_METRIC, f"{score:.3f}")
+    client.set_model_version_tag(name, version.version, "field", run.data.params["field"])
 
     if score >= threshold:
         client.set_registered_model_alias(name, "production", version.version)

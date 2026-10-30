@@ -3992,22 +3992,34 @@ name = "vacancy-role-classifier"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
+    { name = "fastapi" },
+    { name = "mlflow" },
+    { name = "scikit-learn" },
+    { name = "uvicorn" },
+]
+
+[package.dev-dependencies]
+train = [
     { name = "botocore", extra = ["crt"] },
     { name = "dvc", extra = ["s3"] },
     { name = "httpx" },
-    { name = "mlflow" },
-    { name = "scikit-learn" },
     { name = "selectolax" },
     { name = "sentence-transformers" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "fastapi", specifier = ">=0.162.0" },
+    { name = "mlflow", specifier = "==3.17.2" },
+    { name = "scikit-learn", specifier = ">=1.9.1" },
+    { name = "uvicorn", specifier = ">=0.54.0" },
+]
+
+[package.metadata.requires-dev]
+train = [
     { name = "botocore", extras = ["crt"], specifier = ">=1.43.117" },
     { name = "dvc", extras = ["s3"], specifier = ">=3.67.1" },
     { name = "httpx", specifier = ">=0.28.1" },
-    { name = "mlflow", specifier = "==3.17.2" },
-    { name = "scikit-learn", specifier = ">=1.9.1" },
     { name = "selectolax", specifier = ">=1.0.2" },
     { name = "sentence-transformers", specifier = ">=6.2.0" },
 ]
