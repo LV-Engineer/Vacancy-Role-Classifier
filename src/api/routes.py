@@ -9,7 +9,8 @@ from api.service import PredictionService
 router = APIRouter()
 
 def get_service(request: Request) -> PredictionService:
-    return request.app.state.service
+    service: PredictionService = request.app.state.service
+    return service
 
 ServiceDep = Annotated[PredictionService, Depends(get_service)]
 
@@ -18,5 +19,5 @@ def predict(body: PredictRequest, service: ServiceDep) -> PredictResponse:
     return service.predict(body.title, body.description)
 
 @router.get("/health")
-def health(service: ServiceDep) -> dict:
+def health(service: ServiceDep) -> dict[str, object]:
     return {"status": "ok", "models": service.versions()}

@@ -6,15 +6,15 @@ import mlflow
 import pandas as pd
 import numpy as np
 from sentence_transformers import SentenceTransformer
-from sklearn.pipeline import make_pipeline
+from sklearn.pipeline import Pipeline, make_pipeline
 
-from models.constants import EMBEDDING_MAX_TOKENS, EMBEDDING_MODEL, FIELDS, LOGREG_PARAMS, N_FOLDS, TRAIN
+from models.constants import EMBEDDING_MAX_TOKENS, EMBEDDING_MODEL, FIELDS, LABELS, LOGREG_PARAMS, N_FOLDS, TRAIN
 from models.cross_validation import cross_validate
 from sklearn.linear_model import LogisticRegression
 from models.tracking import data_version, setup_mlflow
 from models.metrics import evaluate
 
-def build_model():
+def build_model() -> Pipeline:
     return make_pipeline(LogisticRegression(**LOGREG_PARAMS))
 
 def embed(texts: pd.Series) -> np.ndarray:
@@ -42,7 +42,7 @@ def main(field: str, djinni_weight: float) -> None:
             "djinni_weight": djinni_weight,
             **{f"logreg_{k}": v for k, v in LOGREG_PARAMS.items()},
         })
-        metrics = evaluate(djinni["role"], y_pred, "cv")
+        metrics = evaluate(djinni["role"], y_pred, "cv", LABELS["role"])
         mlflow.log_metrics(metrics)
         print(field, {k: round(v, 3) for k, v in metrics.items() if "macro" in k or "accuracy" in k})
 
