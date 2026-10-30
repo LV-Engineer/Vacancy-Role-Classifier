@@ -20,10 +20,10 @@ def build_model() -> Pipeline:
 def embed(texts: pd.Series) -> np.ndarray:
     encoder = SentenceTransformer(EMBEDDING_MODEL)
     encoder.max_seq_length = EMBEDDING_MAX_TOKENS
-    return encoder.encode(
+    return np.asarray(encoder.encode(
         ["query: " + text for text in texts.fillna("")],
         batch_size=32, normalize_embeddings=True, show_progress_bar=True,
-    )
+    ))
 
 def main(field: str, djinni_weight: float) -> None:
     train = pd.read_csv(TRAIN)
